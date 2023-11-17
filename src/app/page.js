@@ -5,18 +5,22 @@ export default function Home() {
   return (
     <div className="min-h-full flex flex-col items-center justify-center mt-8 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-extrabold text-purple-700">MediTracker</h1>
+        <a className="text-4xl font-extrabold text-purple-700" href="/">
+          Meditracker
+        </a>
       </div>
       <div className="max-w-md w-full space-y-8">
-        <div>
+        <div className="text-center">
+          {" "}
+          {/* Adicione a classe text-center aqui */}
           <h2 className="mt-6 text-4xl font-extrabold text-gray-900">
             Faça login na sua conta
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Ou
+            ou
             <a
-              href="#"
-              className="font-medium text-purple-700 hover:text-purple-800 px-2"
+              href="/registro"
+              className="text-purple-700 font-bold hover:text-purple-900 px-1"
             >
               Registre-se
             </a>

@@ -1,11 +1,10 @@
-import Image from "next/image";
-import Link from "next/link";
-
 export default function Registro() {
   return (
     <div className="min-h-full flex flex-col items-center justify-center mt-8 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-extrabold text-purple-700">MediTracker</h1>
+        <a className="text-4xl font-extrabold text-purple-700" href="/">
+          Meditracker
+        </a>
       </div>
       <div className="max-w-md w-full p-6 rounded-md shadow-md bg-white space-y-8">
         <div className="text-center">
@@ -13,12 +12,13 @@ export default function Registro() {
             Crie sua conta
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Já tem uma conta?
-            <Link href="/registro"></Link>
+            Já tem uma conta? Faça{" "}
+            <a href="/" className="text-purple-700 font-bold">
+              Login
+            </a>
           </p>
         </div>
 
-        {/* Formulário de Registro */}
         <form className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm -space-y-px">
             <div className="grid grid-cols-2 gap-2">
