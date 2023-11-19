@@ -1,7 +1,34 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import axios from "axios";
 
 export default function Home() {
+  const [cpf, setCpf] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erroLogin, setErroLogin] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const url = `http://localhost:8080/paciente/${cpf}?SENHA_PACIENTE=${senha}`;
+
+      const response = await axios.get(url);
+
+      localStorage.setItem("token", response.data.token);
+
+      window.location.href = "/dashboard";
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErroLogin(`Erro ao fazer login: ${error.response.data}`);
+      } else if (error.message) {
+        setErroLogin(`Erro ao fazer login: ${error.message}`);
+      } else {
+        setErroLogin("Erro ao fazer login. Detalhes do erro:", error);
+      }
+    }
+  };
+
   return (
     <div className="min-h-full flex flex-col items-center justify-center mt-8 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
@@ -11,31 +38,32 @@ export default function Home() {
       </div>
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          {" "}
-          {/* Adicione a classe text-center aqui */}
           <h2 className="mt-6 text-4xl font-extrabold text-gray-900">
             Faça login na sua conta
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             ou
-            <a
-              href="/registro"
-              className="text-purple-700 font-bold hover:text-purple-900 px-1"
-            >
-              Registre-se
-            </a>
+            <Link href="/registro">Registre-se</Link>
           </p>
         </div>
 
-        <form className="mt-8 space-y-6">
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+        >
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <input
-                type="email"
+                type="text"
                 autoComplete="none"
                 required
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent"
-                placeholder="E-mail"
+                placeholder="CPF"
               />
             </div>
 
@@ -44,6 +72,8 @@ export default function Home() {
                 type="password"
                 autoComplete="none"
                 required
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent mt-2"
                 placeholder="Senha"
               />
@@ -51,11 +81,18 @@ export default function Home() {
           </div>
 
           <div>
-            <button className="group-relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-700 hover:bg-purple-800">
+            <button
+              type="submit"
+              className="group-relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-700 hover:bg-purple-800"
+            >
               Login
             </button>
           </div>
         </form>
+
+        {erroLogin && (
+          <div className="mt-4 text-red-600 font-bold">{erroLogin}</div>
+        )}
       </div>
     </div>
   );

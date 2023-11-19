@@ -11,6 +11,9 @@ const Registro = () => {
     email: "",
   });
 
+  const [registroSucesso, setRegistroSucesso] = useState(false);
+  const [erroRegistro, setErroRegistro] = useState("");
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -38,13 +41,23 @@ const Registro = () => {
       );
 
       console.log("Resposta do servidor:", response.data);
+
+      setRegistroSucesso(true);
+      setErroRegistro(""); // Limpa mensagens de erro caso haja
+      setFormData({
+        nome: "",
+        dataNascimento: "",
+        cpf: "",
+        senha: "",
+        email: "",
+      });
     } catch (error) {
       if (error.response && error.response.data) {
-        console.error("Erro ao cadastrar:", error.response.data);
+        setErroRegistro(`Erro ao cadastrar: ${error.response.data}`);
       } else if (error.message) {
-        console.error("Erro ao cadastrar:", error.message);
+        setErroRegistro(`Erro ao cadastrar: ${error.message}`);
       } else {
-        console.error("Erro ao cadastrar. Detalhes do erro:", error);
+        setErroRegistro("Erro ao cadastrar. Detalhes do erro:", error);
       }
     }
   };
@@ -147,6 +160,16 @@ const Registro = () => {
             </button>
           </div>
         </form>
+
+        {registroSucesso && (
+          <div className="mt-4 text-green-600 font-bold text-center">
+            Conta criada com sucesso! <br /> Faça login agora.
+          </div>
+        )}
+
+        {erroRegistro && (
+          <div className="mt-4 text-red-600 font-bold">{erroRegistro}</div>
+        )}
       </div>
     </div>
   );
