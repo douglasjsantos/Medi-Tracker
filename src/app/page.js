@@ -1,23 +1,40 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [cpf, setCpf] = useState("");
   const [senha, setSenha] = useState("");
   const [erroLogin, setErroLogin] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Adicione o estado de login
+  const router = useRouter();
+
+  useEffect(() => {
+    // Verifica se há um token no localStorage
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Se houver um token, define o estado isLoggedIn como true
+      setIsLoggedIn(true);
+      // Se houver um token, redireciona para a dashboard
+      router.push("/dashboard");
+    }
+  }, [isLoggedIn]);
 
   const handleLogin = async () => {
     try {
       const url = `http://localhost:8080/paciente/${cpf}?SENHA_PACIENTE=${senha}`;
-
       const response = await axios.get(url);
+      const token = response.data.token;
 
-      localStorage.setItem("token", response.data.token);
+      // Armazena o token no localStorage
+      localStorage.setItem("token", token);
 
-      window.location.href = "/dashboard";
+      // Armazenar o token no estado isLoggedIn
+      setIsLoggedIn(true);
+
+      // Redireciona para a dashboard
+      router.push("/dashboard");
     } catch (error) {
       if (error.response && error.response.data) {
         setErroLogin(`Erro ao fazer login: ${error.response.data}`);
@@ -43,17 +60,16 @@ export default function Home() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             ou
-            <Link href="/registro">Registre-se</Link>
+            <a
+              href="/registro"
+              className="text-purple-700 font-bold hover:text-purple-900 px-1"
+            >
+              Registre-se
+            </a>
           </p>
         </div>
 
-        <form
-          className="mt-8 space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
-        >
+        <form className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <input
@@ -82,7 +98,8 @@ export default function Home() {
 
           <div>
             <button
-              type="submit"
+              type="button"
+              onClick={handleLogin}
               className="group-relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-700 hover:bg-purple-800"
             >
               Login

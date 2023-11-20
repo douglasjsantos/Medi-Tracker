@@ -2,6 +2,9 @@
 "use client";
 import { useState } from "react";
 import Select from "react-select";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { format, addDays, subDays } from "date-fns";
 
 const popularMedications = [
   { label: "Paracetamol", value: "Paracetamol" },
@@ -93,18 +96,71 @@ export default function Dashboard() {
   const [selectedMedication, setSelectedMedication] = useState(null);
   const [disease, setDisease] = useState("");
   const [currentDateMedications, setCurrentDateMedications] = useState([]);
+  const currentDate = new Date();
+  const days = Array.from({ length: 7 }, (_, index) =>
+    index < 3
+      ? subDays(currentDate, 3 - index)
+      : index === 3
+      ? currentDate
+      : addDays(currentDate, index - 3)
+  );
+  const formatDate = (date) => format(date, "dd/MM");
+
+  const daysOfWeekPt = [
+    "Domingo",
+    "Segunda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+    "Sábado",
+  ];
+  const formatDayOfWeek = (date) => daysOfWeekPt[date.getDay()];
+  const router = useRouter();
+
+  const increaseDosage = () => {
+    setNewDosage((prevDosage) => prevDosage + 1);
+  };
+
+  const decreaseDosage = () => {
+    if (newDosage > 0) {
+      setNewDosage((prevDosage) => prevDosage - 1);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/");
+    }
+  }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
 
   const addMedication = () => {
     if (!selectedMedication || newDosage.trim() === "") {
       return;
     }
 
-    setMedications([
-      ...medications,
-      { name: selectedMedication.label, dosage: newDosage },
-    ]);
+    const newMedication = {
+      name: selectedMedication.label,
+      dosage: newDosage,
+      disease: disease,
+    };
+
+    setMedications([...medications, newMedication]);
     setSelectedMedication(null);
     setNewDosage("");
+    setDisease("");
+
+    const displayMedicationsForCurrentDate = () => {
+      setCurrentDateMedications(
+        medications.map((medication) => ({ ...medication, taken: false }))
+      );
+    };
   };
 
   const editMedication = (index, newName) => {
@@ -135,17 +191,40 @@ export default function Dashboard() {
     );
   };
 
-  if (!isLoggedIn) {
-    router.push("/");
-    return null;
-  }
-
   return (
     <div className="min-h-full flex flex-col items-center justify-center mt-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-end w-full mb-4">
+        <button
+          onClick={handleLogout}
+          className="text-purple-700 hover:text-purple-900 font-bold"
+        >
+          Sair
+        </button>
+      </div>
+
       <h1 className="text-4xl font-extrabold text-purple-700">
         Olá, bem-vindo
       </h1>
-      <p>Que medicamento deseja adicionar?</p>
+      <p>
+        Que medicamento deseja adicionar? Hoje é{" "}
+        <span className="font-bold text-purple-700">
+          {formatDayOfWeek(currentDate)}
+        </span>{" "}
+      </p>
+
+      <div className="flex mt-2 space-x-2">
+        {days.map((day, index) => (
+          <button
+            key={index}
+            className={`${
+              index === 3 ? "bg-purple-700" : "bg-gray-300"
+            } text-white px-4 py-2 rounded-md`}
+            onClick={() => displayMedicationsForDate(day)}
+          >
+            {formatDate(day)}
+          </button>
+        ))}
+      </div>
 
       <div className="mt-4">
         <div className="flex flex-col items-center space-y-2">
@@ -160,7 +239,7 @@ export default function Dashboard() {
             type="text"
             placeholder="Dosagem do Medicamento"
             value={newDosage}
-            onChange={(e) => setNewDosage(e.target.value)}
+            onChange={(e) => setNewDosage(e.target.value.replace(/\D/g, ""))}
             className="rounded-md border border-gray-300 px-3 py-2 w-full"
           />
           <input
@@ -179,14 +258,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="mt-4">
-        <button
-          onClick={displayMedicationsForCurrentDate}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md"
-        >
-          Mostrar Medicações do Dia Atual
-        </button>
-      </div>
+      <div className="mt-4"></div>
 
       <div className="mt-4">
         <table className="min-w-full border border-collapse border-gray-300">
@@ -204,7 +276,7 @@ export default function Dashboard() {
               <tr key={index}>
                 <td className="border px-4 py-2">{medication.name}</td>
                 <td className="border px-4 py-2">{medication.dosage}</td>
-                <td className="border px-4 py-2">{disease}</td>
+                <td className="border px-4 py-2">{medication.disease}</td>
                 <td className="border px-4 py-2">
                   {medication.taken ? (
                     <span className="bg-green-500 text-white px-2 py-1 rounded-md">
