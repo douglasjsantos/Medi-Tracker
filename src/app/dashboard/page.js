@@ -1,9 +1,8 @@
 // pages/dashboard.js
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { format, addDays, subDays } from "date-fns";
 
 const popularMedications = [
@@ -41,8 +40,8 @@ export default function Dashboard() {
   const [selectedMedication, setSelectedMedication] = useState(null);
   const [selectedDoenca, setSelectedDoenca] = useState(null);
   const [currentDateMedications, setCurrentDateMedications] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Adicionado state para a data selecionada
   const currentDate = new Date();
-
   const days = Array.from({ length: 7 }, (_, index) =>
     index < 3
       ? subDays(currentDate, 3 - index)
@@ -51,7 +50,6 @@ export default function Dashboard() {
       : addDays(currentDate, index - 3)
   );
   const formatDate = (date) => format(date, "dd/MM");
-
   const daysOfWeekPt = [
     "domingo",
     "segunda-feira",
@@ -81,11 +79,11 @@ export default function Dashboard() {
       router.push("/");
     }
   }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.push("/");
   };
-  let selectedDate;
 
   const addMedication = () => {
     if (!selectedMedication || newDosage.trim() === "" || !selectedDoenca) {
@@ -96,7 +94,7 @@ export default function Dashboard() {
       name: selectedMedication.label,
       dosage: newDosage,
       disease: selectedDoenca.label,
-      date: selectedDate, // Adicione a data atual ao medicamento
+      date: selectedDate.toISOString(),
     };
 
     setMedications([...medications, newMedication]);
@@ -104,9 +102,10 @@ export default function Dashboard() {
     setSelectedDoenca(null);
     setNewDosage("");
 
-    setCurrentDateMedications(
-      medications.map((medication) => ({ ...medication, taken: false }))
-    );
+    setCurrentDateMedications((prevMedications) => [
+      ...prevMedications,
+      { ...newMedication, taken: false },
+    ]);
   };
 
   const editMedication = (index, newName) => {
@@ -131,10 +130,11 @@ export default function Dashboard() {
     setCurrentDateMedications(updatedMedications);
   };
 
-  const displayMedicationsForDate = (selectedDate) => {
+  const displayMedicationsForDate = (date) => {
+    setSelectedDate(date); // Atualizado para definir a data selecionada
     const filteredMedications = medications.filter((medication) => {
       const medicationDate = new Date(medication.date);
-      return formatDate(medicationDate) === formatDate(selectedDate);
+      return formatDate(medicationDate) === formatDate(date);
     });
 
     setCurrentDateMedications(
@@ -169,7 +169,11 @@ export default function Dashboard() {
             key={index}
             className={`${
               index === 3 ? "bg-purple-700" : "bg-gray-300"
-            } text-white px-4 py-2 rounded-md`}
+            } text-white px-4 py-2 rounded-md ${
+              formatDate(day) === formatDate(selectedDate)
+                ? "border-2 border-purple-900"
+                : ""
+            }`}
             onClick={() => displayMedicationsForDate(day)}
           >
             {formatDate(day)}
