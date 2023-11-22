@@ -27,14 +27,11 @@ export default function Home() {
       const response = await axios.get(url);
       const token = response.data.token;
 
-      // Armazena o token no localStorage
       localStorage.setItem("token", token);
 
-      // Armazenar o token no estado isLoggedIn
       setIsLoggedIn(true);
 
-      // Redireciona para a dashboard
-      router.push("/dashboard");
+      router.push("/home");
     } catch (error) {
       if (error.response && error.response.data) {
         setErroLogin(`Erro ao fazer login: ${error.response.data}`);

@@ -7,86 +7,31 @@ import { useEffect } from "react";
 import { format, addDays, subDays } from "date-fns";
 
 const popularMedications = [
-  { label: "Paracetamol", value: "Paracetamol" },
-  { label: "Ibuprofeno", value: "Ibuprofeno" },
-  { label: "Aspirina", value: "Aspirina" },
-  { label: "Amoxicilina", value: "Amoxicilina" },
-  { label: "Omeprazol", value: "Omeprazol" },
   { label: "Metformina", value: "Metformina" },
-  { label: "Simvastatina", value: "Simvastatina" },
-  { label: "Atorvastatina", value: "Atorvastatina" },
-  { label: "LevoTiroxina", value: "LevoTiroxina" },
-  { label: "Metoprolol", value: "Metoprolol" },
-  { label: "Amlodipina", value: "Amlodipina" },
-  { label: "Losartana", value: "Losartana" },
-  { label: "Clopidogrel", value: "Clopidogrel" },
-  { label: "Rosuvastatina", value: "Rosuvastatina" },
-  { label: "Salbutamol", value: "Salbutamol" },
-  { label: "Escitalopram", value: "Escitalopram" },
-  { label: "Sertralina", value: "Sertralina" },
-  { label: "Tramadol", value: "Tramadol" },
-  { label: "Metronidazol", value: "Metronidazol" },
-  { label: "Citalopram", value: "Citalopram" },
-  { label: "Diazepam", value: "Diazepam" },
-  { label: "Warfarina", value: "Warfarina" },
-  { label: "Furosemida", value: "Furosemida" },
-  { label: "Amiodarona", value: "Amiodarona" },
-  { label: "Fluoxetina", value: "Fluoxetina" },
-  { label: "Prednisona", value: "Prednisona" },
-  { label: "Ramipril", value: "Ramipril" },
-  { label: "Lisinopril", value: "Lisinopril" },
-  { label: "Doxiciclina", value: "Doxiciclina" },
-  { label: "Gabapentina", value: "Gabapentina" },
-  { label: "Montelucaste", value: "Montelucaste" },
-  { label: "Valsartana", value: "Valsartana" },
-  { label: "AAS", value: "AAS" },
-  { label: "Hidroclorotiazida", value: "Hidroclorotiazida" },
-  { label: "Pantoprazol", value: "Pantoprazol" },
-  { label: "Candesartana", value: "Candesartana" },
-  { label: "Levotiroxina", value: "Levotiroxina" },
-  { label: "Venlafaxina", value: "Venlafaxina" },
-  { label: "Clonazepam", value: "Clonazepam" },
-  { label: "Paroxetina", value: "Paroxetina" },
+  { label: "Aspirina", value: "Aspirina" },
+  { label: "Salmeterol", value: "Salmeterol" },
+  { label: "Orlistat", value: "Orlistat" },
+  { label: "Alendronato", value: "Alendronato" },
+  { label: "Eritropoetina", value: "Eritropoetina" },
+  { label: "Cisplatina", value: "Cisplatina" },
+  { label: "Donepezila", value: "Donepezila" },
+  { label: "Metotrexato", value: "Metotrexato" },
+];
+
+const popularDoencas = [
+  { label: "Hipertensão Arterial", value: "Hipertensão Arterial" },
+  { label: "Diabetes Mellitus Tipo 2", value: "Diabetes Mellitus Tipo 2" },
+  { label: "Doença Cardíaca Coronária", value: "Doença Cardíaca Coronária" },
   {
-    label: "Amoxicilina + Ácido Clavulânico",
-    value: "Amoxicilina + Ácido Clavulânico",
+    label: "Doença Pulmonar Obstrutiva Crônica",
+    value: "Doença Pulmonar Obstrutiva Crônica",
   },
-  { label: "Mirtazapina", value: "Mirtazapina" },
-  { label: "Olanzapina", value: "Olanzapina" },
-  { label: "Duloxetina", value: "Duloxetina" },
-  { label: "Cefalexina", value: "Cefalexina" },
-  { label: "Fluconazol", value: "Fluconazol" },
-  {
-    label: "Metformina + Cloridrato de Pioglitazona",
-    value: "Metformina + Cloridrato de Pioglitazona",
-  },
-  { label: "Esomeprazol", value: "Esomeprazol" },
-  { label: "Enalapril", value: "Enalapril" },
-  { label: "Naproxeno", value: "Naproxeno" },
-  { label: "Ceftriaxona", value: "Ceftriaxona" },
-  { label: "Sinvastatina", value: "Sinvastatina" },
-  { label: "Salmeterol + Fluticasona", value: "Salmeterol + Fluticasona" },
-  { label: "Ezetimiba", value: "Ezetimiba" },
-  { label: "Rosiglitazona", value: "Rosiglitazona" },
-  { label: "Quetiapina", value: "Quetiapina" },
-  { label: "Ciprofloxacino", value: "Ciprofloxacino" },
-  { label: "Atenolol", value: "Atenolol" },
-  { label: "Pioglitazona", value: "Pioglitazona" },
-  { label: "Aripiprazol", value: "Aripiprazol" },
-  { label: "Trazodona", value: "Trazodona" },
-  { label: "Carbamazepina", value: "Carbamazepina" },
-  { label: "Cefuroxima", value: "Cefuroxima" },
-  { label: "Amitriptilina", value: "Amitriptilina" },
-  { label: "Risperidona", value: "Risperidona" },
-  { label: "Digoxina", value: "Digoxina" },
-  {
-    label: "Amitriptilina + Clordiazepóxido",
-    value: "Amitriptilina + Clordiazepóxido",
-  },
-  { label: "Fenitoína", value: "Fenitoína" },
-  { label: "Loratadina", value: "Loratadina" },
-  { label: "Diltiazem", value: "Diltiazem" },
-  { label: "Ondansetrona", value: "Ondansetrona" },
+  { label: "Obesidade", value: "Obesidade" },
+  { label: "Osteoporose", value: "Osteoporose" },
+  { label: "Doença Renal Crônica", value: "Doença Renal Crônica" },
+  { label: "Câncer de Pulmão", value: "Câncer de Pulmão" },
+  { label: "Doença de Alzheimer", value: "Doença de Alzheimer" },
+  { label: "Artrite Reumatoide", value: "Artrite Reumatoide" },
 ];
 
 export default function Dashboard() {
@@ -94,9 +39,10 @@ export default function Dashboard() {
   const [medications, setMedications] = useState([]);
   const [newDosage, setNewDosage] = useState("");
   const [selectedMedication, setSelectedMedication] = useState(null);
-  const [disease, setDisease] = useState("");
+  const [selectedDoenca, setSelectedDoenca] = useState(null);
   const [currentDateMedications, setCurrentDateMedications] = useState([]);
   const currentDate = new Date();
+
   const days = Array.from({ length: 7 }, (_, index) =>
     index < 3
       ? subDays(currentDate, 3 - index)
@@ -107,13 +53,13 @@ export default function Dashboard() {
   const formatDate = (date) => format(date, "dd/MM");
 
   const daysOfWeekPt = [
-    "Domingo",
-    "Segunda-feira",
-    "Terça-feira",
-    "Quarta-feira",
-    "Quinta-feira",
-    "Sexta-feira",
-    "Sábado",
+    "domingo",
+    "segunda-feira",
+    "terça-feira",
+    "quarta-feira",
+    "quinta-feira",
+    "sexta-feira",
+    "sábado",
   ];
   const formatDayOfWeek = (date) => daysOfWeekPt[date.getDay()];
   const router = useRouter();
@@ -139,28 +85,28 @@ export default function Dashboard() {
     localStorage.removeItem("token");
     router.push("/");
   };
+  let selectedDate;
 
   const addMedication = () => {
-    if (!selectedMedication || newDosage.trim() === "") {
+    if (!selectedMedication || newDosage.trim() === "" || !selectedDoenca) {
       return;
     }
 
     const newMedication = {
       name: selectedMedication.label,
       dosage: newDosage,
-      disease: disease,
+      disease: selectedDoenca.label,
+      date: selectedDate, // Adicione a data atual ao medicamento
     };
 
     setMedications([...medications, newMedication]);
     setSelectedMedication(null);
+    setSelectedDoenca(null);
     setNewDosage("");
-    setDisease("");
 
-    const displayMedicationsForCurrentDate = () => {
-      setCurrentDateMedications(
-        medications.map((medication) => ({ ...medication, taken: false }))
-      );
-    };
+    setCurrentDateMedications(
+      medications.map((medication) => ({ ...medication, taken: false }))
+    );
   };
 
   const editMedication = (index, newName) => {
@@ -185,9 +131,14 @@ export default function Dashboard() {
     setCurrentDateMedications(updatedMedications);
   };
 
-  const displayMedicationsForCurrentDate = () => {
+  const displayMedicationsForDate = (selectedDate) => {
+    const filteredMedications = medications.filter((medication) => {
+      const medicationDate = new Date(medication.date);
+      return formatDate(medicationDate) === formatDate(selectedDate);
+    });
+
     setCurrentDateMedications(
-      medications.map((medication) => ({ ...medication, taken: false }))
+      filteredMedications.map((medication) => ({ ...medication, taken: false }))
     );
   };
 
@@ -242,12 +193,12 @@ export default function Dashboard() {
             onChange={(e) => setNewDosage(e.target.value.replace(/\D/g, ""))}
             className="rounded-md border border-gray-300 px-3 py-2 w-full"
           />
-          <input
-            type="text"
-            placeholder="Nome da Doença"
-            value={disease}
-            onChange={(e) => setDisease(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 w-full"
+          <Select
+            className="w-64"
+            options={popularDoencas}
+            value={selectedDoenca}
+            onChange={(selectedOption) => setSelectedDoenca(selectedOption)}
+            placeholder="Selecione uma doença..."
           />
           <button
             onClick={addMedication}
@@ -289,12 +240,6 @@ export default function Dashboard() {
                   )}
                 </td>
                 <td className="border px-4 py-2">
-                  <button
-                    onClick={() => editMedication(index, prompt("Novo nome:"))}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md mr-2"
-                  >
-                    Editar
-                  </button>
                   <button
                     onClick={() => deleteMedication(index)}
                     className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
