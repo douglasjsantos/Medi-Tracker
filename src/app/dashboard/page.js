@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useRouter } from "next/navigation";
 import { format, addDays, subDays } from "date-fns";
+import { Widget } from "react-chat-widget";
+import "react-chat-widget/lib/styles.css";
 
 const popularMedications = [
   { label: "Metformina", value: "Metformina" },
@@ -15,6 +17,7 @@ const popularMedications = [
   { label: "Cisplatina", value: "Cisplatina" },
   { label: "Donepezila", value: "Donepezila" },
   { label: "Metotrexato", value: "Metotrexato" },
+  { label: "Outro", value: "Outro" },
 ];
 
 const popularDoencas = [
@@ -42,6 +45,9 @@ export default function Dashboard() {
   const [currentDateMedications, setCurrentDateMedications] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date()); // Adicionado state para a data selecionada
   const currentDate = new Date();
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+
   const days = Array.from({ length: 7 }, (_, index) =>
     index < 3
       ? subDays(currentDate, 3 - index)
@@ -131,14 +137,23 @@ export default function Dashboard() {
   };
 
   const displayMedicationsForDate = (date) => {
-    setSelectedDate(date); // Atualizado para definir a data selecionada
+    setSelectedDate(date);
+
     const filteredMedications = medications.filter((medication) => {
       const medicationDate = new Date(medication.date);
       return formatDate(medicationDate) === formatDate(date);
     });
 
     setCurrentDateMedications(
-      filteredMedications.map((medication) => ({ ...medication, taken: false }))
+      filteredMedications.map((medication) => {
+        const existingMedication = currentDateMedications.find(
+          (currentMedication) => currentMedication.name === medication.name
+        );
+
+        return existingMedication
+          ? { ...existingMedication, taken: medication.taken || false }
+          : { ...medication, taken: medication.taken || false };
+      })
     );
   };
 
@@ -232,7 +247,7 @@ export default function Dashboard() {
                 <td className="border px-4 py-2">{medication.name}</td>
                 <td className="border px-4 py-2">{medication.dosage}</td>
                 <td className="border px-4 py-2">{medication.disease}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-4 py-2 text-center">
                   {medication.taken ? (
                     <span className="bg-green-500 text-white px-2 py-1 rounded-md">
                       ✔

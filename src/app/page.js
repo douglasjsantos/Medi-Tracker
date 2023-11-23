@@ -1,113 +1,108 @@
-"use client";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+// pages/index.js
+import React from "react";
+import Link from "next/link";
 
-export default function Home() {
-  const [cpf, setCpf] = useState("");
-  const [senha, setSenha] = useState("");
-  const [erroLogin, setErroLogin] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Adicione o estado de login
-  const router = useRouter();
-
-  useEffect(() => {
-    // Verifica se há um token no localStorage
-    const token = localStorage.getItem("token");
-    if (token) {
-      // Se houver um token, define o estado isLoggedIn como true
-      setIsLoggedIn(true);
-      // Se houver um token, redireciona para a dashboard
-      router.push("/dashboard");
-    }
-  }, [isLoggedIn]);
-
-  const handleLogin = async () => {
-    try {
-      const url = `http://localhost:8080/paciente/${cpf}?SENHA_PACIENTE=${senha}`;
-      const response = await axios.get(url);
-      const token = response.data.token;
-
-      localStorage.setItem("token", token);
-
-      setIsLoggedIn(true);
-
-      router.push("/home");
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setErroLogin(`Erro ao fazer login: ${error.response.data}`);
-      } else if (error.message) {
-        setErroLogin(`Erro ao fazer login: ${error.message}`);
-      } else {
-        setErroLogin("Erro ao fazer login. Detalhes do erro:", error);
-      }
-    }
-  };
-
+const Home = () => {
   return (
-    <div className="min-h-full flex flex-col items-center justify-center mt-8 px-4 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <a className="text-4xl font-extrabold text-purple-700" href="/">
-          Meditracker
-        </a>
+    <div className="bg-purple-900 text-white min-h-screen relative p-8">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold mb-4">MediTracker</h1>
+        <p className="text-lg mb-4">
+          Nunca esqueça de tomar seus medicamentos!
+        </p>
       </div>
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h2 className="mt-6 text-4xl font-extrabold text-gray-900">
-            Faça login na sua conta
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            ou
-            <a
-              href="/registro"
-              className="text-purple-700 font-bold hover:text-purple-900 px-1"
+      <div className="absolute top-0 right-0 p-4">
+        <Link
+          href="/home"
+          className="bg-white text-purple-900 py-2 px-4 rounded-md"
+        >
+          Login
+        </Link>
+      </div>
+      <div className="mt-8 text-center">
+        <p className="mb-4">
+          Receba lembretes personalizados para cuidar da sua saúde.
+        </p>
+      </div>
+      <div className="mt-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Recursos Principais</h2>
+        <div className="flex justify-center">
+          <div className="mx-4">
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="mx-auto mb-2 text-white"
             >
-              Registre-se
-            </a>
-          </p>
+              <path
+                d="M21.9598 10.9707C22.0134 11.8009 22.0134 12.6607 21.9598 13.4909C21.6856 17.7332 18.3536 21.1125 14.1706 21.3905C12.7435 21.4854 11.2536 21.4852 9.8294 21.3905C9.33896 21.3579 8.8044 21.2409 8.34401 21.0513C7.83177 20.8403 7.5756 20.7348 7.44544 20.7508C7.31527 20.7668 7.1264 20.9061 6.74868 21.1846C6.08268 21.6757 5.24367 22.0285 3.99943 21.9982C3.37026 21.9829 3.05568 21.9752 2.91484 21.7351C2.77401 21.495 2.94941 21.1626 3.30021 20.4978C3.78674 19.5758 4.09501 18.5203 3.62791 17.6746C2.82343 16.4666 2.1401 15.036 2.04024 13.4909C1.98659 12.6607 1.98659 11.8009 2.04024 10.9707C2.31441 6.72838 5.64639 3.34913 9.8294 3.07107C11.0318 2.99114 11.2812 2.97856 12.5 3.03368"
+                stroke="#ffffff"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M8.5 15H15.5M8.5 10H12"
+                stroke="#ffffff"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M22 5.5C22 7.433 20.433 9 18.5 9C16.567 9 15 7.433 15 5.5C15 3.567 16.567 2 18.5 2C20.433 2 22 3.567 22 5.5Z"
+                stroke="#ffffff"
+                strokeWidth="1.5"
+              />
+            </svg>
+
+            <p>Lembretes Personalizados</p>
+          </div>
+          <div className="mx-4">
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="mx-auto mb-2 text-white"
+            >
+              <path
+                d="M22 22V17H16V22H22Z"
+                stroke="#ffffff"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M8 22V17H2V22H8Z"
+                stroke="#ffffff"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M19 17V14H5.00105L5 17"
+                stroke="#ffffff"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M11.5 7L13.5 5M16.5 6.5C16.5 8.98528 14.4853 11 12 11C9.51472 11 7.5 8.98528 7.5 6.5C7.5 4.01472 9.51472 2 12 2C14.4853 2 16.5 4.01472 16.5 6.5Z"
+                stroke="#ffffff"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+            </svg>
+
+            <p>Gerenciamento de Medicamentos</p>
+          </div>
         </div>
-
-        <form className="mt-8 space-y-6">
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <input
-                type="text"
-                autoComplete="none"
-                required
-                value={cpf}
-                onChange={(e) => setCpf(e.target.value)}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent"
-                placeholder="CPF"
-              />
-            </div>
-
-            <div>
-              <input
-                type="password"
-                autoComplete="none"
-                required
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent mt-2"
-                placeholder="Senha"
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="button"
-              onClick={handleLogin}
-              className="group-relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-700 hover:bg-purple-800"
-            >
-              Login
-            </button>
-          </div>
-        </form>
-
-        {erroLogin && (
-          <div className="mt-4 text-red-600 font-bold">{erroLogin}</div>
-        )}
       </div>
+      <footer className="text-center text-sm mt-8">
+        <p>© 2023 MediTracker. Todos os direitos reservados.</p>
+      </footer>
     </div>
   );
-}
+};
+
+export default Home;
