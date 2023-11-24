@@ -7,16 +7,14 @@ export default function Home() {
   const [cpf, setCpf] = useState("");
   const [senha, setSenha] = useState("");
   const [erroLogin, setErroLogin] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Adicione o estado de login
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Verifica se há um token no localStorage
     const token = localStorage.getItem("token");
     if (token) {
-      // Se houver um token, define o estado isLoggedIn como true
       setIsLoggedIn(true);
-      // Se houver um token, redireciona para a dashboard
+
       router.push("/dashboard");
     }
   }, [isLoggedIn]);

@@ -33,8 +33,6 @@ const members = [
     turma: "1TDSPY",
     cargo: "Desenvolveu a Experiência do Usuário",
   },
-
-  // Adicione outros membros da equipe conforme necessário
 ];
 
 const Footer = () => {
