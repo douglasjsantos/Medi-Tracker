@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useRouter } from "next/navigation";
 import { format, addDays, subDays } from "date-fns";
-import { Widget } from "react-chat-widget";
-import "react-chat-widget/lib/styles.css";
 
 const popularMedications = [
   { label: "Hipertensão Arterial", value: "Hipertensão Arterial" },
