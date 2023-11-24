@@ -1,4 +1,3 @@
-// pages/dashboard.js
 "use client";
 import { useState, useEffect } from "react";
 import Select from "react-select";
@@ -8,19 +7,6 @@ import { Widget } from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 
 const popularMedications = [
-  { label: "Metformina", value: "Metformina" },
-  { label: "Aspirina", value: "Aspirina" },
-  { label: "Salmeterol", value: "Salmeterol" },
-  { label: "Orlistat", value: "Orlistat" },
-  { label: "Alendronato", value: "Alendronato" },
-  { label: "Eritropoetina", value: "Eritropoetina" },
-  { label: "Cisplatina", value: "Cisplatina" },
-  { label: "Donepezila", value: "Donepezila" },
-  { label: "Metotrexato", value: "Metotrexato" },
-  { label: "Outro", value: "Outro" },
-];
-
-const popularDoencas = [
   { label: "Hipertensão Arterial", value: "Hipertensão Arterial" },
   { label: "Diabetes Mellitus Tipo 2", value: "Diabetes Mellitus Tipo 2" },
   { label: "Doença Cardíaca Coronária", value: "Doença Cardíaca Coronária" },
@@ -36,6 +22,19 @@ const popularDoencas = [
   { label: "Artrite Reumatoide", value: "Artrite Reumatoide" },
 ];
 
+const popularDoencas = [
+  { label: "Metformina", value: "Metformina" },
+  { label: "Aspirina", value: "Aspirina" },
+  { label: "Salmeterol", value: "Salmeterol" },
+  { label: "Orlistat", value: "Orlistat" },
+  { label: "Alendronato", value: "Alendronato" },
+  { label: "Eritropoetina", value: "Eritropoetina" },
+  { label: "Cisplatina", value: "Cisplatina" },
+  { label: "Donepezila", value: "Donepezila" },
+  { label: "Metotrexato", value: "Metotrexato" },
+  { label: "Outro", value: "Outro" },
+];
+
 export default function Dashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [medications, setMedications] = useState([]);
@@ -43,10 +42,11 @@ export default function Dashboard() {
   const [selectedMedication, setSelectedMedication] = useState(null);
   const [selectedDoenca, setSelectedDoenca] = useState(null);
   const [currentDateMedications, setCurrentDateMedications] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date()); // Adicionado state para a data selecionada
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const currentDate = new Date();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const router = useRouter();
 
   const days = Array.from({ length: 7 }, (_, index) =>
     index < 3
@@ -55,6 +55,7 @@ export default function Dashboard() {
       ? currentDate
       : addDays(currentDate, index - 3)
   );
+
   const formatDate = (date) => format(date, "dd/MM");
   const daysOfWeekPt = [
     "domingo",
@@ -66,16 +67,9 @@ export default function Dashboard() {
     "sábado",
   ];
   const formatDayOfWeek = (date) => daysOfWeekPt[date.getDay()];
-  const router = useRouter();
 
   const increaseDosage = () => {
     setNewDosage((prevDosage) => prevDosage + 1);
-  };
-
-  const decreaseDosage = () => {
-    if (newDosage > 0) {
-      setNewDosage((prevDosage) => prevDosage - 1);
-    }
   };
 
   useEffect(() => {
@@ -83,8 +77,35 @@ export default function Dashboard() {
 
     if (!token) {
       router.push("/");
+    } else {
+      const savedMedications =
+        JSON.parse(localStorage.getItem("medications")) || [];
+      setMedications(savedMedications);
+      displayMedicationsForDate(selectedDate);
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("medications", JSON.stringify(medications));
+  }, [medications]);
+
+  useEffect(() => {
+    const chatContainer = document.getElementsByClassName(
+      "rcw-messages-container"
+    )[0];
+
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleNewUserMessage = async (newMessage) => {
+    setMessages([
+      ...messages,
+      { author: "user", type: "text", content: newMessage },
+    ]);
+    setNewMessage("");
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -114,6 +135,27 @@ export default function Dashboard() {
     ]);
   };
 
+  const displayMedicationsForDate = (date) => {
+    setSelectedDate(date);
+
+    const filteredMedications = medications.filter((medication) => {
+      const medicationDate = new Date(medication.date);
+      return formatDate(medicationDate) === formatDate(date);
+    });
+
+    setCurrentDateMedications(
+      filteredMedications.map((medication) => {
+        const existingMedication = currentDateMedications.find(
+          (currentMedication) => currentMedication.name === medication.name
+        );
+
+        return existingMedication
+          ? { ...existingMedication, taken: medication.taken || false }
+          : { ...medication, taken: medication.taken || false };
+      })
+    );
+  };
+
   const editMedication = (index, newName) => {
     const updatedMedications = [...medications];
     updatedMedications[index].name = newName;
@@ -134,27 +176,6 @@ export default function Dashboard() {
     const updatedMedications = [...currentDateMedications];
     updatedMedications[index].taken = !updatedMedications[index].taken;
     setCurrentDateMedications(updatedMedications);
-  };
-
-  const displayMedicationsForDate = (date) => {
-    setSelectedDate(date);
-
-    const filteredMedications = medications.filter((medication) => {
-      const medicationDate = new Date(medication.date);
-      return formatDate(medicationDate) === formatDate(date);
-    });
-
-    setCurrentDateMedications(
-      filteredMedications.map((medication) => {
-        const existingMedication = currentDateMedications.find(
-          (currentMedication) => currentMedication.name === medication.name
-        );
-
-        return existingMedication
-          ? { ...existingMedication, taken: medication.taken || false }
-          : { ...medication, taken: medication.taken || false };
-      })
-    );
   };
 
   return (

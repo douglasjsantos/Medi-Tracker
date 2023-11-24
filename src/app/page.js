@@ -1,7 +1,6 @@
-// pages/index.js
 import React from "react";
 import Link from "next/link";
-
+import Footer from "./footer/page";
 const Home = () => {
   return (
     <div className="bg-purple-900 text-white min-h-screen relative p-8">
@@ -98,6 +97,8 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
       <footer className="text-center text-sm mt-8">
         <p>© 2023 MediTracker. Todos os direitos reservados.</p>
       </footer>
