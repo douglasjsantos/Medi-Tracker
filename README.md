@@ -34,3 +34,6 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+Importe o projeto de java (Medi-Tracker - Java) e dentro do pacote br.com.meditracker execute a classe GerenciaMedicamentos.java, ao executar irá subir o servidor no qual funcionará a aplicação podendo fazer login e se registrar no app.
+O cliente consegue se registrar, fazer login na conta e acessar a dashboard apenas se tiver logado, no dashboard poderá adicionar um medicamento, a dosagem e selecionar uma doença especifica que esse remédio está tratando, podendo adicionar em vários dias e marcar como se foi ou não tomado naquele dia
